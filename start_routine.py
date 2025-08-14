@@ -41,11 +41,13 @@ class RoutineEditor(tk.Toplevel):
 
         ex_frame: tk.Frame = tk.Frame(ex_box)
         ex_frame.grid(row=start_row, column=0, sticky=tk.EW)
-        ttk.Combobox(ex_frame).grid(row=0, column=0, sticky=tk.W)
-        weight = tk.Entry(ex_frame)
+        ttk.Combobox(ex_frame, values=["squat", "bench press", "deadlift"]).grid(
+            row=0, column=0, sticky=tk.W
+        )
+        weight = tk.Entry(ex_frame, width=5)
         wo_set.append(weight)
         weight.grid(row=0, column=1, sticky=tk.W)
-        reps = tk.Entry(ex_frame)
+        reps = tk.Entry(ex_frame, width=3)
         wo_set.append(reps)
         self.wo_exercises[ex_frame] = wo_set
         reps.grid(row=0, column=2, sticky=tk.W)
