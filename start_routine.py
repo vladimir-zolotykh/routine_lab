@@ -12,38 +12,24 @@ class RoutineEditor(tk.Toplevel):
         super().__init__(*args, **kwargs)
         self._root = root
         self.protocol("WM_DELETE_WINDOW", self._on_closing)
-        menu = tk.Menu(self)
-        menu.add_command(label="Show grid_size()", command=self.show_grid_size)
-        self["menu"] = menu
         self.topframe: tk.Frame = tk.Frame(self)
-        # topframe = self.topframe
         self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1)
-        # topframe.grid(row=0, column=0, sticky=tk.NSEW)
-        # ts_frame = tk.Frame(topframe)
         ts_frame = tk.Frame(self)
         ts_frame.grid(row=0, column=0, sticky=tk.W)
         tk.Label(ts_frame, text="When: ").grid(row=0, column=0)
         tk.Entry(ts_frame).grid(row=0, column=1)
-        # ex_frame: tk.Frame = tk.Frame(topframe)
         ex_frame: tk.Frame = tk.Frame(self)
         self.ex_frame = ex_frame
-        # topframe.rowconfigure(1, weight=1)
         ex_frame.rowconfigure(1, weight=1)
         ex_frame.grid(row=1, column=0, sticky=tk.EW)
-        # btn_frame: tk.Frame = tk.Frame(topframe)
         btn_frame: tk.Frame = tk.Frame(self)
         btn_frame.grid(row=2, column=0, columnspan=2, sticky=tk.EW)
         tk.Button(
             btn_frame, text="Add exercise", command=lambda: self.add_exercise(ex_frame)
         ).grid(row=0, column=0)
         tk.Button(btn_frame, text="Save workout").grid(row=0, column=1)
-        # self.add_exercise(ex_frame)
-        self.ex_frame_count = 0
-
-    def show_grid_size(self):
-        # print(self.ex_frame.grid_size())
-        print(self.topframe.grid_size())
+        self.ex_frame_count = 0  # how many rows ex_frame has
 
     def _on_closing(self):
         if self._root:
