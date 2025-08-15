@@ -12,7 +12,11 @@ class RoutineEditor(tk.Toplevel):
         super().__init__(*args, **kwargs)
         self._root = root
         self.protocol("WM_DELETE_WINDOW", self._on_closing)
-        topframe: tk.Frame = tk.Frame(self)
+        menu = tk.Menu(self)
+        menu.add_command(label="Show grid_size()", command=self.show_grid_size)
+        self["menu"] = menu
+        self.topframe: tk.Frame = tk.Frame(self)
+        topframe = self.topframe
         self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1)
         topframe.grid(row=0, column=0, sticky=tk.NSEW)
@@ -21,6 +25,7 @@ class RoutineEditor(tk.Toplevel):
         tk.Label(ts_frame, text="When: ").grid(row=0, column=0)
         tk.Entry(ts_frame).grid(row=0, column=1)
         ex_frame: tk.Frame = tk.Frame(topframe)
+        self.ex_frame = ex_frame
         topframe.rowconfigure(1, weight=1)
         ex_frame.rowconfigure(1, weight=1)
         ex_frame.grid(row=1, column=0, sticky=tk.EW)
@@ -31,6 +36,10 @@ class RoutineEditor(tk.Toplevel):
         ).grid(row=0, column=0)
         tk.Button(btn_frame, text="Save workout").grid(row=0, column=1)
         # self.add_exercise(ex_frame)
+
+    def show_grid_size(self):
+        # print(self.ex_frame.grid_size())
+        print(self.topframe.grid_size())
 
     def _on_closing(self):
         if self._root:
