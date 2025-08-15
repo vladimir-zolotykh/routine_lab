@@ -21,10 +21,13 @@ class RoutineEditor(tk.Toplevel):
         tk.Entry(ts_frame).grid(row=0, column=1)
         ex_frame: tk.Frame = tk.Frame(topframe)
         topframe.rowconfigure(1, weight=1)
+        ex_frame.rowconfigure(1, weight=1)
         ex_frame.grid(row=1, column=0, sticky=tk.EW)
         btn_frame: tk.Frame = tk.Frame(topframe)
         btn_frame.grid(row=2, column=0, columnspan=2, sticky=tk.EW)
-        tk.Button(btn_frame, text="Add exercise").grid(row=0, column=0)
+        tk.Button(
+            btn_frame, text="Add exercise", command=lambda: self.add_exercise(ex_frame)
+        ).grid(row=0, column=0)
         tk.Button(btn_frame, text="Save workout").grid(row=0, column=1)
         self.add_exercise(ex_frame)
 
@@ -36,11 +39,11 @@ class RoutineEditor(tk.Toplevel):
         if ex_frame in self.wo_exercises:
             del self.wo_exercises[ex_frame]
 
-    def add_exercise(self, ex_box: tk.Frame, start_row: int = 1) -> None:
+    def add_exercise(self, ex_box: tk.Frame) -> None:
         wo_set: list[tk.Entry] = []
 
         ex_frame: tk.Frame = tk.Frame(ex_box)
-        ex_frame.grid(row=start_row, column=0, sticky=tk.EW)
+        ex_frame.grid(column=0, sticky=tk.EW)  # NOTE! row= not set increments row
         ttk.Combobox(ex_frame, values=["squat", "bench press", "deadlift"]).grid(
             row=0, column=0, sticky=tk.W
         )
