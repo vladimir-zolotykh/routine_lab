@@ -35,8 +35,9 @@ class RoutineEditor(tk.Toplevel):
         if self._root:
             self._root.destroy()
 
-    def remove_exerecise(self, ex_frame: tk.Frame) -> None:
+    def remove_exercise(self, ex_frame: tk.Frame) -> None:
         if ex_frame in self.wo_exercises:
+            ex_frame.destroy()
             del self.wo_exercises[ex_frame]
 
     def add_exercise(self, ex_box: tk.Frame) -> None:
@@ -55,7 +56,7 @@ class RoutineEditor(tk.Toplevel):
         self.wo_exercises[ex_frame] = wo_set
         reps.grid(row=0, column=2, sticky=tk.W)
         del_btn = tk.Button(
-            ex_frame, text="Delete", command=lambda: self.remove_exerecise(ex_frame)
+            ex_frame, text="Delete", command=lambda: self.remove_exercise(ex_frame)
         )
         del_btn.grid(row=0, column=3, sticky=tk.W)
 
