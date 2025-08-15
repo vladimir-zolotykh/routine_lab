@@ -13,6 +13,7 @@ class RoutineEditor(tk.Toplevel):
         self._root = root
         self.protocol("WM_DELETE_WINDOW", self._on_closing)
         topframe: tk.Frame = tk.Frame(self)
+        self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1)
         topframe.grid(row=0, column=0, sticky=tk.NSEW)
         ts_frame = tk.Frame(topframe)
@@ -29,7 +30,7 @@ class RoutineEditor(tk.Toplevel):
             btn_frame, text="Add exercise", command=lambda: self.add_exercise(ex_frame)
         ).grid(row=0, column=0)
         tk.Button(btn_frame, text="Save workout").grid(row=0, column=1)
-        self.add_exercise(ex_frame)
+        # self.add_exercise(ex_frame)
 
     def _on_closing(self):
         if self._root:
@@ -39,6 +40,7 @@ class RoutineEditor(tk.Toplevel):
         if ex_frame in self.wo_exercises:
             ex_frame.destroy()
             del self.wo_exercises[ex_frame]
+            self.update_idletasks()
 
     def add_exercise(self, ex_box: tk.Frame) -> None:
         wo_set: list[tk.Entry] = []
@@ -59,6 +61,7 @@ class RoutineEditor(tk.Toplevel):
             ex_frame, text="Delete", command=lambda: self.remove_exercise(ex_frame)
         )
         del_btn.grid(row=0, column=3, sticky=tk.W)
+        self.update_idletasks()
 
 
 if __name__ == "__main__":
