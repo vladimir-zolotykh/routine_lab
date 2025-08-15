@@ -16,20 +16,23 @@ class RoutineEditor(tk.Toplevel):
         menu.add_command(label="Show grid_size()", command=self.show_grid_size)
         self["menu"] = menu
         self.topframe: tk.Frame = tk.Frame(self)
-        topframe = self.topframe
+        # topframe = self.topframe
         self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1)
-        topframe.grid(row=0, column=0, sticky=tk.NSEW)
-        ts_frame = tk.Frame(topframe)
+        # topframe.grid(row=0, column=0, sticky=tk.NSEW)
+        # ts_frame = tk.Frame(topframe)
+        ts_frame = tk.Frame(self)
         ts_frame.grid(row=0, column=0, sticky=tk.W)
         tk.Label(ts_frame, text="When: ").grid(row=0, column=0)
         tk.Entry(ts_frame).grid(row=0, column=1)
-        ex_frame: tk.Frame = tk.Frame(topframe)
+        # ex_frame: tk.Frame = tk.Frame(topframe)
+        ex_frame: tk.Frame = tk.Frame(self)
         self.ex_frame = ex_frame
-        topframe.rowconfigure(1, weight=1)
+        # topframe.rowconfigure(1, weight=1)
         ex_frame.rowconfigure(1, weight=1)
         ex_frame.grid(row=1, column=0, sticky=tk.EW)
-        btn_frame: tk.Frame = tk.Frame(topframe)
+        # btn_frame: tk.Frame = tk.Frame(topframe)
+        btn_frame: tk.Frame = tk.Frame(self)
         btn_frame.grid(row=2, column=0, columnspan=2, sticky=tk.EW)
         tk.Button(
             btn_frame, text="Add exercise", command=lambda: self.add_exercise(ex_frame)
