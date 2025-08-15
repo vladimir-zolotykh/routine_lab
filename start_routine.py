@@ -29,7 +29,6 @@ class RoutineEditor(tk.Toplevel):
             btn_frame, text="Add exercise", command=lambda: self.add_exercise(ex_frame)
         ).grid(row=0, column=0)
         tk.Button(btn_frame, text="Save workout").grid(row=0, column=1)
-        self.ex_frame_count = 0  # how many rows ex_frame has
 
     def _on_closing(self):
         if self._root:
@@ -37,11 +36,9 @@ class RoutineEditor(tk.Toplevel):
 
     def remove_exercise(self, ex_frame: tk.Frame) -> None:
         if ex_frame in self.wo_exercises:
-            if self.ex_frame_count > 0:
-                self.ex_frame_count -= 1
             ex_frame.destroy()
             del self.wo_exercises[ex_frame]
-            if self.ex_frame_count < 1:
+            if not self.wo_exercises:
                 self.ex_frame.grid_forget()
             self.update_idletasks()
 
@@ -49,7 +46,6 @@ class RoutineEditor(tk.Toplevel):
         wo_set: list[tk.Entry] = []
 
         ex_frame: tk.Frame = tk.Frame(ex_box)
-        self.ex_frame_count += 1
         ex_frame.grid(column=0, sticky=tk.EW)  # NOTE! row= not set increments row
         ttk.Combobox(ex_frame, values=["squat", "bench press", "deadlift"]).grid(
             row=0, column=0, sticky=tk.W
