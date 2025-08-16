@@ -21,8 +21,6 @@ class RoutineEditor(tk.Toplevel):
         tk.Entry(ts_frame).grid(row=0, column=1)
         ex_frame: tk.Frame = tk.Frame(self)
         self.ex_frame = ex_frame
-        ex_frame.rowconfigure(1, weight=1)
-        ex_frame.grid(row=1, column=0, sticky=tk.EW)
         btn_frame: tk.Frame = tk.Frame(self)
         btn_frame.grid(row=2, column=0, columnspan=2, sticky=tk.EW)
         tk.Button(
@@ -44,6 +42,9 @@ class RoutineEditor(tk.Toplevel):
 
     def add_exercise(self, ex_box: tk.Frame) -> None:
         wo_set: list[tk.Entry] = []
+        if not self.wo_exercises:
+            self.ex_frame.rowconfigure(1, weight=1)
+            self.ex_frame.grid(row=1, column=0, sticky=tk.EW)
 
         ex_frame: tk.Frame = tk.Frame(ex_box)
         ex_frame.grid(column=0, sticky=tk.EW)  # NOTE! row= not set increments row
@@ -67,4 +68,6 @@ class RoutineEditor(tk.Toplevel):
 if __name__ == "__main__":
     root = tk.Tk()
     root.withdraw()
-    RoutineEditor(root).mainloop()
+    re = RoutineEditor(root)
+    re.geometry("+779+266")
+    re.mainloop()
