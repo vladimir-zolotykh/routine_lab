@@ -3,14 +3,24 @@
 # PYTHON_ARGCOMPLETE_OK
 import tkinter as tk
 from tkinter import ttk
+from sqlalchemy import (
+    Engine,
+    create_engine,
+)
+from sqlalchemy.orm import Session
+import argparse
+import argcomplete
+import model as MD
+import database as DB
 
 
 class RoutineEditor(tk.Toplevel):
     wo_exercises: dict[tk.Frame, list[tk.Entry]] = {}
 
-    def __init__(self, root: tk.Tk | tk.Toplevel, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, root: tk.Tk | tk.Toplevel, session: Session) -> None:
+        super().__init__(root)
         menu = tk.Menu(self)
+        self.session = session
         menu.add_command(label="Quit", command=self.quit)
         self["menu"] = menu
         self._root = root
@@ -68,9 +78,23 @@ class RoutineEditor(tk.Toplevel):
         self.update_idletasks()
 
 
+parser = argparse.ArgumentParser(
+    description="Workout editor", formatter_class=argparse.ArgumentDefaultsHelpFormatter
+)
+
 if __name__ == "__main__":
+    parser.add_argument("--db", help="Workout db", default="routine.db")
+    parser.add_argument("--echo", help="Echo DB commands", action="store_true")
+    argcomplete.autocomplete(parser)
+    args = parser.parse_args()
+    engine: Engine
+    engine = create_engine(f"sqlite+pysqlite:///{args.db}", echo=args.echo, future=True)
     root = tk.Tk()
     root.withdraw()
-    re = RoutineEditor(root)
+    MD.Base.metadata.create_all(engine)
+    with MD.Session(engine) as session:
+        for ex_name in DB.exercise_names:
+            MD.ensure_exercise(ex_name)
+        re = RoutineEditor(root, session)
     re.geometry("+779+266")
     re.mainloop()
