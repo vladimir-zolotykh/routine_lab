@@ -10,6 +10,9 @@ class RoutineEditor(tk.Toplevel):
 
     def __init__(self, root: tk.Tk | tk.Toplevel, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        menu = tk.Menu(self)
+        menu.add_command(label="Quit", command=self.quit)
+        self["menu"] = menu
         self._root = root
         self.protocol("WM_DELETE_WINDOW", self._on_closing)
         self.topframe: tk.Frame = tk.Frame(self)
