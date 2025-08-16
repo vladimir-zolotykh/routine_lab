@@ -61,13 +61,22 @@ class RoutineEditor(tk.Toplevel):
 
         ex_frame: tk.Frame = tk.Frame(ex_box)
         ex_frame.grid(column=0, sticky=tk.EW)  # NOTE! row= not set increments row
-        ttk.Combobox(ex_frame, values=["squat", "bench press", "deadlift"]).grid(
-            row=0, column=0, sticky=tk.W
+        ex_names = [en.name for en in self.session.query(MD.ExerciseName).all()]
+        assert len(ex_names) > 0
+        ex_name_var = tk.StringVar(value=ex_names[0])
+        assert ex_name_var.get() == "front squat"
+        cb = ttk.Combobox(
+            ex_frame, textvariable=ex_name_var, values=ex_names, state="readonly"
         )
-        weight = tk.Entry(ex_frame, width=5)
+        cb.grid(row=0, column=0, sticky=tk.W)
+        cb.current(0)
+
+        weight_var = tk.DoubleVar(value=100.0)
+        weight = tk.Entry(ex_frame, textvariable=weight_var, width=5)
         wo_set.append(weight)
         weight.grid(row=0, column=1, sticky=tk.W)
-        reps = tk.Entry(ex_frame, width=3)
+        reps_var = tk.IntVar(value=5)
+        reps = tk.Entry(ex_frame, textvariable=reps_var, width=3)
         wo_set.append(reps)
         self.wo_exercises[ex_frame] = wo_set
         reps.grid(row=0, column=2, sticky=tk.W)
@@ -94,7 +103,7 @@ if __name__ == "__main__":
     MD.Base.metadata.create_all(engine)
     with MD.Session(engine) as session:
         for ex_name in DB.exercise_names:
-            MD.ensure_exercise(ex_name)
+            MD.ensure_exercise(session, ex_name)
         re = RoutineEditor(root, session)
     re.geometry("+779+266")
     re.mainloop()
