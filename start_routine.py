@@ -67,7 +67,6 @@ class RoutineEditor(tk.Toplevel):
             ex_frame, textvariable=ex_name_var, values=ex_names, state="readonly"
         )
         cb.grid(row=0, column=0, sticky=tk.W)
-        cb.current(0)
 
         weight_var = tk.DoubleVar(value=100.0)
         weight = tk.Entry(ex_frame, textvariable=weight_var, width=5)
