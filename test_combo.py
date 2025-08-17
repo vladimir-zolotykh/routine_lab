@@ -30,8 +30,8 @@ class TestCombo(tk.Tk):
         cb.grid()
 
     def add_combobox(self):
-        name_var = tk.StringVar(value=self.ex_names[0])
-        cb = ttk.Combobox(self.box, textvariable=name_var, values=self.ex_names)
+        self.name_var2 = tk.StringVar(value=self.ex_names[0])
+        cb = ttk.Combobox(self.box, textvariable=self.name_var2, values=self.ex_names)
         cb.grid()
 
 
