@@ -26,16 +26,14 @@ class TestCombo(tk.Tk):
         name_var = tk.StringVar(value="front squat")
         menu.add_command(label="Print name_var", command=lambda: print(name_var.get()))
         menu.add_command(label="Add Combobox", command=self.add_combobox)
-        menu.add_command(
-            label="Print 'str_var_' attributes", command=self._print_str_var
-        )
+        menu.add_command(label="Print 'str_var_' attributes", command=self._print_vars)
         cb = ttk.Combobox(self.box, textvariable=name_var, values=self.ex_names)
         cb.grid()
 
         self.str_num: int = 1
         self.str_var_dict: dict[str, tk.StringVar] = {}
 
-    def _print_str_var(self):
+    def _print_vars(self):
         print(f"{self.str_var_dict = }")
 
     def _make_var(self, value: str, prefix: str = "str_var_") -> tk.StringVar:
