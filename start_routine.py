@@ -62,9 +62,7 @@ class RoutineEditor(tk.Toplevel):
         ex_frame: tk.Frame = tk.Frame(ex_box)
         ex_frame.grid(column=0, sticky=tk.EW)  # NOTE! row= not set increments row
         ex_names = [en.name for en in self.session.query(MD.ExerciseName).all()]
-        assert len(ex_names) > 0
         ex_name_var = tk.StringVar(value=ex_names[0])
-        assert ex_name_var.get() == "front squat"
         cb = ttk.Combobox(
             ex_frame, textvariable=ex_name_var, values=ex_names, state="readonly"
         )
