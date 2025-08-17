@@ -1,1 +1,3 @@
 __pycache__/
+.emacs.desktop*
+routine.db
