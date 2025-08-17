@@ -18,6 +18,7 @@ class TestCombo(tk.Tk):
 
     def __init__(self):
         super().__init__()
+        self.geometry("431x174+60+164")
         menu = tk.Menu(self)
         self["menu"] = menu
         self.box = tk.Frame(self)
