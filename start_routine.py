@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # PYTHON_ARGCOMPLETE_OK
+import contextlib
+import io
 import tkinter as tk
 from tkinter import ttk
 from sqlalchemy import (
@@ -13,6 +15,7 @@ import argcomplete
 from types import MethodType
 import model as MD
 import database as DB
+from showtext import ShowText
 
 
 def _make_var(self, value: str, prefix: str = "str_var_") -> tk.StringVar:
@@ -34,7 +37,9 @@ class RoutineEditor(tk.Toplevel):
         self.session = session
         menu.add_command(label="Quit", command=self.quit)
         show_menu = tk.Menu(menu)
-        show_menu.add_command(label="Show exercises", command=self.show_exercises)
+        show_menu.add_command(
+            label="Show exercise names", command=self.show_exercise_names
+        )
         menu.add_cascade(label="Show", menu=show_menu)
         self["menu"] = menu
         self._root = root
@@ -68,8 +73,11 @@ class RoutineEditor(tk.Toplevel):
                 self.ex_frame.grid_forget()
             self.update_idletasks()
 
-    def show_exercises(self):
-        pass
+    def show_exercise_names(self):
+        with contextlib.redirect_stdout(io.StringIO()) as s:
+            for ex_name in self.session.query(MD.ExerciseName).all():
+                print(ex_name)
+            ShowText(self, message=s.getvalue())
 
     def add_exercise(self, ex_box: tk.Frame) -> None:
         wo_set: list[tk.Entry] = []
