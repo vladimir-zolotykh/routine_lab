@@ -1,8 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # PYTHON_ARGCOMPLETE_OK
+from types import MethodType
 import tkinter as tk
 from tkinter import ttk
+
+
+def _make_var(self, value: str, prefix: str = "str_var_") -> tk.StringVar:
+    if not hasattr(self, "str_num"):
+        setattr(self, "str_num", 1)
+    var_name = prefix + str(self.str_num)
+    self.str_num += 1
+    var = tk.StringVar(value=value)
+    setattr(self, var_name, var)
+    return var
 
 
 class TestCombo(tk.Tk):
@@ -32,21 +43,26 @@ class TestCombo(tk.Tk):
 
         self.str_num: int = 1
         self.str_var_dict: dict[str, tk.StringVar] = {}
+        self._make_var = MethodType(_make_var, self)
 
     def _print_vars(self):
         print(f"{self.str_var_dict = }")
 
-    def _make_var(self, value: str, prefix: str = "str_var_") -> tk.StringVar:
-        var_name = prefix + str(self.str_num)
-        self.str_num += 1
-        var = tk.StringVar(value=value)
-        setattr(self, var_name, var)
-        self.str_var_dict[var_name] = var
-        return var
+    # def _make_var(self, value: str, prefix: str = "str_var_") -> tk.StringVar:
+    #     var_name = prefix + str(self.str_num)
+    #     try:
+    #         self.str_num += 1
+    #     except AttributeError:
+    #         setattr(self, "str_num", 1)
+    #     var = tk.StringVar(value=value)
+    #     setattr(self, var_name, var)
+    #     self.str_var_dict[var_name] = var
+    #     return var
 
     def add_combobox(self):
         cb = ttk.Combobox(
             self.box,
+            # textvariable=self._make_var(self.ex_names[0]),
             textvariable=self._make_var(self.ex_names[0]),
             values=self.ex_names,
         )
