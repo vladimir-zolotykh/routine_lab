@@ -29,7 +29,7 @@ def _make_var(self, value: str, prefix: str = "str_var_") -> tk.StringVar:
 
 
 class RoutineEditor(tk.Toplevel):
-    wo_exercises: dict[tk.Frame, list[tk.Entry]] = {}
+    wo_exercises: dict[tk.Frame, tuple[tk.DoubleVar, tk.IntVar]] = {}
 
     def __init__(self, root: tk.Tk | tk.Toplevel, session: Session) -> None:
         super().__init__(root)
@@ -65,6 +65,17 @@ class RoutineEditor(tk.Toplevel):
         if self._root:
             self._root.destroy()
 
+    def save_workout(self):
+        wo: MD.Workout = MD.Workout()
+        for _, (weight_var, reps_var) in self.wo_exercises.items():
+            ex: MD.Exercise = MD.Exercise(
+                weight=weight_var.get(),
+                reps=reps_var.get(),
+            )
+            wo.exercises.append(ex)
+        self.session.add(wo)
+        self.session.commit()
+
     def remove_exercise(self, ex_frame: tk.Frame) -> None:
         if ex_frame in self.wo_exercises:
             ex_frame.destroy()
@@ -80,7 +91,6 @@ class RoutineEditor(tk.Toplevel):
             ShowText(self, message=s.getvalue())
 
     def add_exercise(self, ex_box: tk.Frame) -> None:
-        wo_set: list[tk.Entry] = []
         if not self.wo_exercises:
             self.ex_frame.rowconfigure(1, weight=1)
             self.ex_frame.grid(row=1, column=0, sticky=tk.EW)
@@ -98,12 +108,10 @@ class RoutineEditor(tk.Toplevel):
 
         weight_var = tk.DoubleVar(value=100.0)
         weight = tk.Entry(ex_frame, textvariable=weight_var, width=5)
-        wo_set.append(weight)
         weight.grid(row=0, column=1, sticky=tk.W)
         reps_var = tk.IntVar(value=5)
         reps = tk.Entry(ex_frame, textvariable=reps_var, width=3)
-        wo_set.append(reps)
-        self.wo_exercises[ex_frame] = wo_set
+        self.wo_exercises[ex_frame] = (weight_var, reps_var)
         reps.grid(row=0, column=2, sticky=tk.W)
         del_btn = tk.Button(
             ex_frame, text="Delete", command=lambda: self.remove_exercise(ex_frame)

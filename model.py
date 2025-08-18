@@ -38,7 +38,7 @@ class Workout(Base):
     __tablename__ = "workouts"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    started: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    started: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
 
     exercises: Mapped[List["Exercise"]] = relationship(
         back_populates="workout", cascade="all, delete-orphan"
