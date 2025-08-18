@@ -13,7 +13,16 @@ import argcomplete
 from types import MethodType
 import model as MD
 import database as DB
-from test_combo import _make_var
+
+
+def _make_var(self, value: str, prefix: str = "str_var_") -> tk.StringVar:
+    if not hasattr(self, "str_num"):
+        setattr(self, "str_num", 1)
+    var_name = prefix + str(self.str_num)
+    self.str_num += 1
+    var = tk.StringVar(value=value)
+    setattr(self, var_name, var)
+    return var
 
 
 class RoutineEditor(tk.Toplevel):

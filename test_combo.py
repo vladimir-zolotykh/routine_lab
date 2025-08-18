@@ -4,16 +4,7 @@
 from types import MethodType
 import tkinter as tk
 from tkinter import ttk
-
-
-def _make_var(self, value: str, prefix: str = "str_var_") -> tk.StringVar:
-    if not hasattr(self, "str_num"):
-        setattr(self, "str_num", 1)
-    var_name = prefix + str(self.str_num)
-    self.str_num += 1
-    var = tk.StringVar(value=value)
-    setattr(self, var_name, var)
-    return var
+from start_routine import _make_var
 
 
 class TestCombo(tk.Tk):
@@ -37,27 +28,11 @@ class TestCombo(tk.Tk):
         name_var = tk.StringVar(value="front squat")
         menu.add_command(label="Print name_var", command=lambda: print(name_var.get()))
         menu.add_command(label="Add Combobox", command=self.add_combobox)
-        menu.add_command(label="Print 'str_var_' attributes", command=self._print_vars)
         cb = ttk.Combobox(self.box, textvariable=name_var, values=self.ex_names)
         cb.grid()
 
         self.str_num: int = 1
-        self.str_var_dict: dict[str, tk.StringVar] = {}
         self._make_var = MethodType(_make_var, self)
-
-    def _print_vars(self):
-        print(f"{self.str_var_dict = }")
-
-    # def _make_var(self, value: str, prefix: str = "str_var_") -> tk.StringVar:
-    #     var_name = prefix + str(self.str_num)
-    #     try:
-    #         self.str_num += 1
-    #     except AttributeError:
-    #         setattr(self, "str_num", 1)
-    #     var = tk.StringVar(value=value)
-    #     setattr(self, var_name, var)
-    #     self.str_var_dict[var_name] = var
-    #     return var
 
     def add_combobox(self):
         cb = ttk.Combobox(
