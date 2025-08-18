@@ -33,6 +33,9 @@ class RoutineEditor(tk.Toplevel):
         menu = tk.Menu(self)
         self.session = session
         menu.add_command(label="Quit", command=self.quit)
+        show_menu = tk.Menu(menu)
+        show_menu.add_command(label="Show exercises", command=self.show_exercises)
+        menu.add_cascade(label="Show", menu=show_menu)
         self["menu"] = menu
         self._root = root
         self.protocol("WM_DELETE_WINDOW", self._on_closing)
@@ -64,6 +67,9 @@ class RoutineEditor(tk.Toplevel):
             if not self.wo_exercises:
                 self.ex_frame.grid_forget()
             self.update_idletasks()
+
+    def show_exercises(self):
+        pass
 
     def add_exercise(self, ex_box: tk.Frame) -> None:
         wo_set: list[tk.Entry] = []
