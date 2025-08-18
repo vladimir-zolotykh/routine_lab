@@ -10,8 +10,10 @@ from sqlalchemy import (
 from sqlalchemy.orm import Session
 import argparse
 import argcomplete
+from types import MethodType
 import model as MD
 import database as DB
+from test_combo import _make_var
 
 
 class RoutineEditor(tk.Toplevel):
@@ -40,6 +42,7 @@ class RoutineEditor(tk.Toplevel):
             btn_frame, text="Add exercise", command=lambda: self.add_exercise(ex_frame)
         ).grid(row=0, column=0)
         tk.Button(btn_frame, text="Save workout").grid(row=0, column=1)
+        self._make_var = MethodType(_make_var, self)
 
     def _on_closing(self):
         if self._root:
@@ -62,9 +65,11 @@ class RoutineEditor(tk.Toplevel):
         ex_frame: tk.Frame = tk.Frame(ex_box)
         ex_frame.grid(column=0, sticky=tk.EW)  # NOTE! row= not set increments row
         ex_names = [en.name for en in self.session.query(MD.ExerciseName).all()]
-        ex_name_var = tk.StringVar(value=ex_names[0])
         cb = ttk.Combobox(
-            ex_frame, textvariable=ex_name_var, values=ex_names, state="readonly"
+            ex_frame,
+            textvariable=self._make_var(value=ex_names[0]),
+            values=ex_names,
+            state="readonly",
         )
         cb.grid(row=0, column=0, sticky=tk.W)
 
