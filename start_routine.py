@@ -52,7 +52,8 @@ class RoutineEditor(tk.Toplevel):
         ts_frame = tk.Frame(self)
         ts_frame.grid(row=0, column=0, sticky=tk.W)
         tk.Label(ts_frame, text="When: ").grid(row=0, column=0)
-        tk.Entry(ts_frame).grid(row=0, column=1)
+        self.started_var = tk.StringVar(value=datetime.now().strftime("%y-%m-%d"))
+        tk.Entry(ts_frame, textvariable=started_var).grid(row=0, column=1)
         ex_frame: tk.Frame = tk.Frame(self)
         self.ex_frame = ex_frame
         btn_frame: tk.Frame = tk.Frame(self)
@@ -75,7 +76,9 @@ class RoutineEditor(tk.Toplevel):
         )
 
     def save_workout(self):
-        wo: MD.Workout = MD.Workout()
+        wo: MD.Workout = MD.Workout(
+            datetime.strptime(self.started_var.get(), "%y-%m-%d")
+        )
         for _, (ex_name_var, weight_var, reps_var) in self.wo_exercises.items():
             ex_name_obj: MD.ExerciseName = MD.ensure_exercise(
                 session, ex_name_var.get()
@@ -87,7 +90,8 @@ class RoutineEditor(tk.Toplevel):
             )
             wo.exercises.append(ex)
         self.session.add(wo)
-        wo.name = askeditstring(self.draft_name(wo.started, wo.exercises))
+        self.session.commit()  # ensure wo.started is initialized
+        wo.name = askeditstring(self.draft_wo_name(wo.started, wo.exercises))
         self.session.commit()
 
     def remove_exercise(self, ex_frame: tk.Frame) -> None:
@@ -136,9 +140,7 @@ parser = argparse.ArgumentParser(
 
 if __name__ == "__main__":
     parser.add_argument("--db", help="Workout db", default="routine.db")
-    parser.add_argument(
-        "--echo", help="Echo DB commands", default=True, action="store_true"
-    )
+    parser.add_argument("--echo", help="Echo DB commands", action="store_true")
     argcomplete.autocomplete(parser)
     args = parser.parse_args()
     engine: Engine
