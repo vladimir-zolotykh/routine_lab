@@ -3,6 +3,7 @@
 # PYTHON_ARGCOMPLETE_OK
 import contextlib
 import io
+from datetime import datetime
 import tkinter as tk
 from tkinter import ttk
 from sqlalchemy import (
@@ -67,6 +68,11 @@ class RoutineEditor(tk.Toplevel):
         if self._root:
             self._root.destroy()
 
+    def draft_wo_name(self, started: datetime, exercises: list[MD.Exercise]) -> str:
+        return started.strftime("%y-%m-%d") + "-".join(
+            ex.exercise_name for ex in exercises
+        )
+
     def save_workout(self):
         wo: MD.Workout = MD.Workout()
         for _, (ex_name_var, weight_var, reps_var) in self.wo_exercises.items():
@@ -80,6 +86,7 @@ class RoutineEditor(tk.Toplevel):
             )
             wo.exercises.append(ex)
         self.session.add(wo)
+        wo.name = self.draft_name(wo.started, wo.exercises)
         self.session.commit()
 
     def remove_exercise(self, ex_frame: tk.Frame) -> None:

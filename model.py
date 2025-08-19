@@ -38,6 +38,7 @@ class Workout(Base):
     __tablename__ = "workouts"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    name: Mapped[str] = mapped_column(String, unique=True, nullable=False)
     started: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
 
     exercises: Mapped[List["Exercise"]] = relationship(
