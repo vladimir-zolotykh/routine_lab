@@ -29,7 +29,7 @@ def _make_var(self, value: str, prefix: str = "str_var_") -> tk.StringVar:
 
 
 class RoutineEditor(tk.Toplevel):
-    wo_exercises: dict[tk.Frame, tuple[tk.DoubleVar, tk.IntVar]] = {}
+    wo_exercises: dict[tk.Frame, tuple[tk.StringVar, tk.DoubleVar, tk.IntVar]] = {}
 
     def __init__(self, root: tk.Tk | tk.Toplevel, session: Session) -> None:
         super().__init__(root)
@@ -58,7 +58,9 @@ class RoutineEditor(tk.Toplevel):
         tk.Button(
             btn_frame, text="Add exercise", command=lambda: self.add_exercise(ex_frame)
         ).grid(row=0, column=0)
-        tk.Button(btn_frame, text="Save workout").grid(row=0, column=1)
+        tk.Button(btn_frame, text="Save workout", command=self.save_workout).grid(
+            row=0, column=1
+        )
         self._make_var = MethodType(_make_var, self)
 
     def _on_closing(self):
@@ -67,8 +69,12 @@ class RoutineEditor(tk.Toplevel):
 
     def save_workout(self):
         wo: MD.Workout = MD.Workout()
-        for _, (weight_var, reps_var) in self.wo_exercises.items():
+        for _, (ex_name_var, weight_var, reps_var) in self.wo_exercises.items():
+            ex_name_obj: MD.ExerciseName = MD.ensure_exercise(
+                session, ex_name_var.get()
+            )
             ex: MD.Exercise = MD.Exercise(
+                exercise_name=ex_name_obj,
                 weight=weight_var.get(),
                 reps=reps_var.get(),
             )
@@ -98,12 +104,8 @@ class RoutineEditor(tk.Toplevel):
         ex_frame: tk.Frame = tk.Frame(ex_box)
         ex_frame.grid(column=0, sticky=tk.EW)  # NOTE! row= not set increments row
         ex_names = [en.name for en in self.session.query(MD.ExerciseName).all()]
-        cb = ttk.Combobox(
-            ex_frame,
-            textvariable=self._make_var(value=ex_names[0]),
-            values=ex_names,
-            state="readonly",
-        )
+        ex_name_var = self._make_var(value=ex_names[0])
+        cb = ttk.Combobox(ex_frame, textvariable=ex_name_var, values=ex_names)
         cb.grid(row=0, column=0, sticky=tk.W)
 
         weight_var = tk.DoubleVar(value=100.0)
@@ -111,7 +113,7 @@ class RoutineEditor(tk.Toplevel):
         weight.grid(row=0, column=1, sticky=tk.W)
         reps_var = tk.IntVar(value=5)
         reps = tk.Entry(ex_frame, textvariable=reps_var, width=3)
-        self.wo_exercises[ex_frame] = (weight_var, reps_var)
+        self.wo_exercises[ex_frame] = (ex_name_var, weight_var, reps_var)
         reps.grid(row=0, column=2, sticky=tk.W)
         del_btn = tk.Button(
             ex_frame, text="Delete", command=lambda: self.remove_exercise(ex_frame)
@@ -126,7 +128,9 @@ parser = argparse.ArgumentParser(
 
 if __name__ == "__main__":
     parser.add_argument("--db", help="Workout db", default="routine.db")
-    parser.add_argument("--echo", help="Echo DB commands", action="store_true")
+    parser.add_argument(
+        "--echo", help="Echo DB commands", default=True, action="store_true"
+    )
     argcomplete.autocomplete(parser)
     args = parser.parse_args()
     engine: Engine
