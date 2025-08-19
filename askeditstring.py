@@ -14,7 +14,7 @@ class QueryEditString(_QueryDialog):
         super().__init__(*args, **kw)
 
     def body(self, master):
-        entry = super().body(self, master)
+        entry = super().body(master)
         self.default_str_var = tk.StringVar(value=self.default_str)
         entry.configure(textvariable=self.default_str_var)
         return entry
