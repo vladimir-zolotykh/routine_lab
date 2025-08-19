@@ -17,6 +17,7 @@ from types import MethodType
 import model as MD
 import database as DB
 from showtext import ShowText
+from askeditstring import askeditstring
 
 
 def _make_var(self, value: str, prefix: str = "str_var_") -> tk.StringVar:
@@ -86,7 +87,7 @@ class RoutineEditor(tk.Toplevel):
             )
             wo.exercises.append(ex)
         self.session.add(wo)
-        wo.name = self.draft_name(wo.started, wo.exercises)
+        wo.name = askeditstring(self.draft_name(wo.started, wo.exercises))
         self.session.commit()
 
     def remove_exercise(self, ex_frame: tk.Frame) -> None:
