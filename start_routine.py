@@ -7,6 +7,7 @@ import io
 from datetime import datetime
 import tkinter as tk
 from tkinter import ttk
+from tkinter.messagebox import showinfo
 from sqlalchemy import (
     Engine,
     create_engine,
@@ -90,17 +91,22 @@ class RoutineEditor(tk.Toplevel):
                 reps=reps_var.get(),
             )
             wo.exercises.append(ex)
-        self.session.add(wo)
-        wo.name = askeditstring(
-            os.path.basename(__file__),
-            "Workout name? ",
-            default_str=self.draft_wo_name(wo.started, wo.exercises),
-            parent=self,
-        )
-        if wo.name is None:
-            self.session.rollback()
-            return
-        self.session.commit()
+            self.session.add(wo)
+            wo.name = askeditstring(
+                os.path.basename(__file__),
+                "Workout name? ",
+                default_str=self.draft_wo_name(wo.started, wo.exercises),
+                parent=self,
+            )
+            if wo.name is None:
+                self.session.rollback()
+                showinfo(
+                    os.path.basename(__file__),
+                    "Workout namining cancelled",
+                    parent=self,
+                )
+                return
+            self.session.commit()
 
     def remove_exercise(self, ex_frame: tk.Frame) -> None:
         if ex_frame in self.wo_exercises:
