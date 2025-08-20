@@ -157,9 +157,13 @@ if __name__ == "__main__":
     root.withdraw()
     MD.Base.metadata.create_all(engine)
     with MD.Session(engine) as session:
-        for ex_name in DB.exercise_names:
-            MD.ensure_exercise(session, ex_name)
-        session.commit()
+        try:
+            with session.begin():
+                for ex_name in DB.exercise_names:
+                    MD.ensure_exercise(session, ex_name)
+        except Exception:
+            session.rollback()
+            raise
         re = RoutineEditor(root, session)
     re.geometry("+779+266")
     re.mainloop()

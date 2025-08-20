@@ -81,4 +81,5 @@ def ensure_exercise(session: Session, name: str) -> ExerciseName:
         return instance
     instance = ExerciseName(name=name)
     session.add(instance)
+    session.flush()
     return instance
