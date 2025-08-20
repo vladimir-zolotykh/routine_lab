@@ -97,7 +97,7 @@ class RoutineEditor(tk.Toplevel):
             default_str=self.draft_wo_name(wo.started, wo.exercises),
         )
         if wo.name is None:
-            session.rollback()
+            self.session.rollback()
             return
         self.session.commit()
 
