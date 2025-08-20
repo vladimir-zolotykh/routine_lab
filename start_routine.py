@@ -95,6 +95,7 @@ class RoutineEditor(tk.Toplevel):
             os.path.basename(__file__),
             "Workout name? ",
             default_str=self.draft_wo_name(wo.started, wo.exercises),
+            parent=self,
         )
         if wo.name is None:
             self.session.rollback()
