@@ -81,5 +81,4 @@ def ensure_exercise(session: Session, name: str) -> ExerciseName:
         return instance
     instance = ExerciseName(name=name)
     session.add(instance)
-    session.commit()  # ensure id is assigned
     return instance
