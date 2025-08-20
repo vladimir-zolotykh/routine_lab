@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # PYTHON_ARGCOMPLETE_OK
+import os
 import contextlib
 import io
 from datetime import datetime
@@ -75,13 +76,13 @@ class RoutineEditor(tk.Toplevel):
             ex.exercise_name.name for ex in exercises
         )
 
-    def save_workout(self):
+    def save_workout(self) -> None:
         wo: MD.Workout = MD.Workout(
             started=datetime.strptime(self.started_var.get(), "%y-%m-%d")
         )
         for _, (ex_name_var, weight_var, reps_var) in self.wo_exercises.items():
             ex_name_obj: MD.ExerciseName = MD.ensure_exercise(
-                session, ex_name_var.get()
+                self.session, ex_name_var.get()
             )
             ex: MD.Exercise = MD.Exercise(
                 exercise_name=ex_name_obj,
@@ -91,10 +92,13 @@ class RoutineEditor(tk.Toplevel):
             wo.exercises.append(ex)
         self.session.add(wo)
         wo.name = askeditstring(
-            "Name workout",
+            os.path.basename(__file__),
             "Workout name? ",
             default_str=self.draft_wo_name(wo.started, wo.exercises),
         )
+        if wo.name is None:
+            session.rollback()
+            return
         self.session.commit()
 
     def remove_exercise(self, ex_frame: tk.Frame) -> None:
