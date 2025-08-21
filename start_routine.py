@@ -12,7 +12,7 @@ from sqlalchemy import (
     Engine,
     create_engine,
 )
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, sessionmaker
 import argparse
 import argcomplete
 from types import MethodType
@@ -78,35 +78,40 @@ class RoutineEditor(tk.Toplevel):
         )
 
     def save_workout(self) -> None:
-        wo: MD.Workout = MD.Workout(
-            started=datetime.strptime(self.started_var.get(), "%y-%m-%d")
-        )
-        for _, (ex_name_var, weight_var, reps_var) in self.wo_exercises.items():
-            ex_name_obj: MD.ExerciseName = MD.ensure_exercise(
-                self.session, ex_name_var.get()
-            )
-            ex: MD.Exercise = MD.Exercise(
-                exercise_name=ex_name_obj,
-                weight=weight_var.get(),
-                reps=reps_var.get(),
-            )
-            wo.exercises.append(ex)
-            self.session.add(wo)
-            wo.name = askeditstring(
-                os.path.basename(__file__),
-                "Workout name? ",
-                default_str=self.draft_wo_name(wo.started, wo.exercises),
-                parent=self,
-            )
-            if wo.name is None:
-                self.session.rollback()
+        try:
+            with self.session.begin():
+                wo: MD.Workout = MD.Workout(
+                    started=datetime.strptime(self.started_var.get(), "%y-%m-%d")
+                )
+                for _, (ex_name_var, weight_var, reps_var) in self.wo_exercises.items():
+                    ex_name_obj: MD.ExerciseName = MD.ensure_exercise(
+                        self.session, ex_name_var.get()
+                    )
+                    ex: MD.Exercise = MD.Exercise(
+                        exercise_name=ex_name_obj,
+                        weight=weight_var.get(),
+                        reps=reps_var.get(),
+                    )
+                    wo.exercises.append(ex)
+                    self.session.add(wo)
+                    wo.name = askeditstring(
+                        os.path.basename(__file__),
+                        "Workout name? ",
+                        default_str=self.draft_wo_name(wo.started, wo.exercises),
+                        parent=self,
+                    )
+                    if wo.name is None:
+                        raise ValueError("Workout namining cancelled")
+        except Exception as e:
+            self.session.rollback()
+            if isinstance(e, ValueError):
                 showinfo(
                     os.path.basename(__file__),
-                    "Workout namining cancelled",
+                    str(e),
                     parent=self,
                 )
-                return
-            self.session.commit()
+            else:
+                raise
 
     def remove_exercise(self, ex_frame: tk.Frame) -> None:
         if ex_frame in self.wo_exercises:
@@ -162,7 +167,9 @@ if __name__ == "__main__":
     root = tk.Tk()
     root.withdraw()
     MD.Base.metadata.create_all(engine)
-    with MD.Session(engine) as session:
+    SessionLocal = sessionmaker(bind=engine)
+    # with MD.Session(engine) as session:
+    with SessionLocal() as session:
         try:
             with session.begin():
                 for ex_name in DB.exercise_names:
@@ -170,6 +177,7 @@ if __name__ == "__main__":
         except Exception:
             session.rollback()
             raise
+        # re = RoutineEditor(root, MD.Session(session))
         re = RoutineEditor(root, session)
     re.geometry("+779+266")
     re.mainloop()
