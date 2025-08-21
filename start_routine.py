@@ -172,6 +172,7 @@ if __name__ == "__main__":
         try:
             for ex_name in DB.exercise_names:
                 MD.ensure_exercise(session, ex_name)
+            session.commit()
         except Exception:
             session.rollback()
             raise
