@@ -92,15 +92,17 @@ class RoutineEditor(tk.Toplevel):
                     reps=reps_var.get(),
                 )
                 wo.exercises.append(ex)
-                self.session.add(wo)
-                wo.name = askeditstring(
-                    os.path.basename(__file__),
-                    "Workout name? ",
-                    default_str=self.draft_wo_name(wo.started, wo.exercises),
-                    parent=self,
-                )
-                if wo.name is None:
-                    raise ValueError("Workout namining cancelled")
+                session.add(ex)
+            self.session.add(wo)
+            wo.name = askeditstring(
+                os.path.basename(__file__),
+                "Workout name? ",
+                default_str=self.draft_wo_name(wo.started, wo.exercises),
+                parent=self,
+            )
+            if wo.name is None:
+                raise ValueError("Workout namining cancelled")
+            session.commit()
         except Exception as e:
             self.session.rollback()
             if isinstance(e, ValueError):
