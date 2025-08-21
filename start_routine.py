@@ -83,17 +83,16 @@ class RoutineEditor(tk.Toplevel):
                 started=datetime.strptime(self.started_var.get(), "%y-%m-%d")
             )
             for _, (ex_name_var, weight_var, reps_var) in self.wo_exercises.items():
-                ex_name_obj: MD.ExerciseName = MD.ensure_exercise(
-                    self.session, ex_name_var.get()
-                )
+                with self.session.no_autoflush:
+                    ex_name_obj: MD.ExerciseName = MD.ensure_exercise(
+                        self.session, ex_name_var.get()
+                    )
                 ex: MD.Exercise = MD.Exercise(
                     exercise_name=ex_name_obj,
                     weight=weight_var.get(),
                     reps=reps_var.get(),
                 )
                 wo.exercises.append(ex)
-                session.add(ex)
-            self.session.add(wo)
             wo.name = askeditstring(
                 os.path.basename(__file__),
                 "Workout name? ",
@@ -102,6 +101,7 @@ class RoutineEditor(tk.Toplevel):
             )
             if wo.name is None:
                 raise ValueError("Workout namining cancelled")
+            self.session.add(wo)
             session.commit()
         except Exception as e:
             self.session.rollback()
