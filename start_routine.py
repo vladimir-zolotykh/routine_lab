@@ -44,6 +44,7 @@ class RoutineEditor(tk.Toplevel):
         show_menu.add_command(
             label="Show exercise names", command=self.show_exercise_names
         )
+        show_menu.add_command(label="Show workouts", command=self.show_workouts)
         menu.add_cascade(label="Show", menu=show_menu)
         self["menu"] = menu
         self._root = root
@@ -127,6 +128,9 @@ class RoutineEditor(tk.Toplevel):
             for ex_name in self.session.query(MD.ExerciseName).all():
                 print(ex_name)
             ShowText(self, message=s.getvalue())
+
+    def show_workouts(self):
+        pass
 
     def add_exercise(self, ex_box: tk.Frame) -> None:
         if not self.wo_exercises:
