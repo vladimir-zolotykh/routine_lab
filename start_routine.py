@@ -19,6 +19,7 @@ from types import MethodType
 import model as MD
 import database as DB
 from showtext import ShowText
+from showlist import ShowList
 from askeditstring import askeditstring
 
 
@@ -41,10 +42,8 @@ class RoutineEditor(tk.Toplevel):
         self.session = session
         menu.add_command(label="Quit", command=self.quit)
         show_menu = tk.Menu(menu)
-        show_menu.add_command(
-            label="Show exercise names", command=self.show_exercise_names
-        )
-        show_menu.add_command(label="Show workouts", command=self.show_workouts)
+        show_menu.add_command(label="Exercise names", command=self.show_exercise_names)
+        show_menu.add_command(label="Workouts", command=self.show_workouts)
         menu.add_cascade(label="Show", menu=show_menu)
         self["menu"] = menu
         self._root = root
@@ -130,7 +129,8 @@ class RoutineEditor(tk.Toplevel):
             ShowText(self, message=s.getvalue())
 
     def show_workouts(self):
-        pass
+        workouts: list[MD.Workout] = self.session.query(MD.Workout).all()
+        ShowList(parent=self, items=[wo.name for wo in workouts])
 
     def add_exercise(self, ex_box: tk.Frame) -> None:
         if not self.wo_exercises:

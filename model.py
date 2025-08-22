@@ -48,6 +48,7 @@ class Workout(Base):
     def __repr__(self):
         return (
             f"<Workout(id={self.id}, started={self.started.date().isoformat()}, "
+            f"name={self.name}, "
             f"exercises={', '.join(e.exercise_name.name for e in self.exercises)}>"
         )
 
