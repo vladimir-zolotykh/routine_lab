@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 # PYTHON_ARGCOMPLETE_OK
 import tkinter as tk
+from tkinter import ttk
 import tkinter.simpledialog
 import model as MD
 
@@ -12,17 +13,37 @@ class ShowWorkout(tkinter.simpledialog.Dialog):
         super().__init__(*args, **kwargs)
 
     def body(self, master) -> tk.Widget:
-        text = tk.Text(master)
-        text.grid()
-        text.insert(tk.END, f"id: {str(self.workout.id)}\n")
-        text.insert(tk.END, f"name: {self.workout.name}\n")
-        text.insert(tk.END, f"started: {self.workout.started.strftime('%y-%m-%d')}\n")
-        for ex_row, ex in enumerate(self.workout.exercises):
-            ex: str = ", ".join(
-                map(str, [str(ex.id), ex.exercise_name.name, ex.weight, ex.reps])
+        box = tk.Frame(master)
+        row: int = 0
+        box.grid()
+        tk.Label(box, text="id: ").grid(row=row, column=0, sticky=tk.W)
+        id_var = tk.IntVar(value=self.workout.id)
+        tk.Entry(box, textvariable=id_var).grid(row=row, column=1)
+        row += 1
+        tk.Label(box, text="name: ").grid(row=row, column=0, sticky=tk.W)
+        name_var = tk.StringVar(value=self.workout.name)
+        tk.Entry(box, textvariable=name_var).grid(row=row, column=1)
+        row += 1
+        tk.Label(box, text="started:").grid(row=row, column=0, sticky=tk.W)
+        started_var = tk.StringVar(value=self.workout.started.strftime("%y-%m-%d"))
+        tk.Entry(box, textvariable=started_var).grid(row=row, column=1)
+        row += 1
+        ttk.Separator(box, orient=tk.HORIZONTAL).grid(
+            row=row, columnspan=4, sticky=tk.EW, pady=5
+        )
+        row += 1
+        for row, ex in enumerate(self.workout.exercises, row):
+            id_var = tk.IntVar(value=ex.id)
+            tk.Entry(box, textvariable=id_var, width=2, state=tk.DISABLED).grid(
+                row=row, column=0, sticky=tk.E
             )
-            text.insert(tk.END, "    " + ex + "\n")
-        return text
+            name_var = tk.StringVar(value=ex.exercise_name.name)
+            tk.Entry(box, textvariable=name_var).grid(row=row, column=1)
+            weight_var = tk.DoubleVar(value=ex.weight)
+            tk.Entry(box, textvariable=weight_var, width=5).grid(row=row, column=2)
+            reps_var = tk.IntVar(value=ex.reps)
+            tk.Entry(box, textvariable=reps_var, width=3).grid(row=row, column=3)
+        return box
 
 
 class ShowList(tkinter.simpledialog.Dialog):
