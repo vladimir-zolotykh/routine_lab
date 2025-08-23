@@ -3,11 +3,27 @@
 # PYTHON_ARGCOMPLETE_OK
 import tkinter as tk
 import tkinter.simpledialog
+import model as MD
+
+
+class ShowWorkout(tkinter.simpledialog.Dialog):
+    def __init__(self, *args, workout: MD.Workout, **kwargs):
+        self.workout = workout
+        super().__init__(*args, **kwargs)
+
+    def body(self, master) -> tk.Widget:
+        text = tk.Text(master)
+        text.grid()
+        text.insert(tk.END, self.workout.name)
+        return text
 
 
 class ShowList(tkinter.simpledialog.Dialog):
     def __init__(self, *args, items: list[str] = [], **kwargs) -> None:
         self.parent = kwargs.get("parent", None)
+        assert (
+            self.parent.__class__.__name__ == "RoutineEditor"
+        ), "ShowList parent must be RoutineEditor"
         self.items = items
         super().__init__(*args, **kwargs)
 
@@ -28,5 +44,9 @@ class ShowList(tkinter.simpledialog.Dialog):
         if selection:
             index = selection[0]
             value = listbox.get(index)
-            print(f"Selected: {value}")
-            # ShowWorkout(self.parent, get_workout(value))
+            ShowWorkout(
+                self,
+                workout=self.parent.session.query(MD.Workout)
+                .filter_by(name=value)
+                .first(),
+            )
