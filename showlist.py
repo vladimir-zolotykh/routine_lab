@@ -18,14 +18,10 @@ class ShowWorkout(tkinter.simpledialog.Dialog):
         text.insert(tk.END, f"name: {self.workout.name}\n")
         text.insert(tk.END, f"started: {self.workout.started.strftime('%y-%m-%d')}\n")
         for ex_row, ex in enumerate(self.workout.exercises):
-            text.insert(tk.END, "    ")
-            text.insert(
-                tk.END,
-                ", ".join(
-                    map(str, [str(ex.id), ex.exercise_name.name, ex.weight, ex.reps])
-                ),
+            ex: str = ", ".join(
+                map(str, [str(ex.id), ex.exercise_name.name, ex.weight, ex.reps])
             )
-            text.insert(tk.END, "\n")
+            text.insert(tk.END, "    " + ex + "\n")
         return text
 
 
