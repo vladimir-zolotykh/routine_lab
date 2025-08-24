@@ -16,17 +16,14 @@ class ShowWorkout(tkinter.simpledialog.Dialog):
         box = tk.Frame(master)
         row: int = 0
         box.grid()
-        tk.Label(box, text="id: ").grid(row=row, column=0, sticky=tk.W)
-        id_var = tk.IntVar(value=self.workout.id)
-        tk.Entry(box, textvariable=id_var).grid(row=row, column=1)
-        row += 1
-        tk.Label(box, text="name: ").grid(row=row, column=0, sticky=tk.W)
-        name_var = tk.StringVar(value=self.workout.name)
-        tk.Entry(box, textvariable=name_var).grid(row=row, column=1)
-        row += 1
-        tk.Label(box, text="started:").grid(row=row, column=0, sticky=tk.W)
-        started_var = tk.StringVar(value=self.workout.started.strftime("%y-%m-%d"))
-        tk.Entry(box, textvariable=started_var).grid(row=row, column=1)
+        for text, var_type in zip(
+            ("id", "name", "started"), (tk.IntVar, tk.StringVar, tk.StringVar)
+        ):
+            row += 1
+            tk.Label(box, text=f"{text}: ").grid(row=row, column=0, sticky=tk.W)
+            var = var_type(value=getattr(self.workout, text))
+            tk.Entry(box, textvariable=var).grid(row=row, column=1)
+
         row += 1
         ttk.Separator(box, orient=tk.HORIZONTAL).grid(
             row=row, columnspan=4, sticky=tk.EW, pady=5
