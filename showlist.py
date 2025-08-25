@@ -17,7 +17,6 @@ class ShowWorkout(tkinter.simpledialog.Dialog):
         super().__init__(*args, **kwargs)
 
     def body(self, master) -> tk.Widget:
-        # self._make_var = MethodType(_make_var, self)
         box = tk.Frame(master)
         row: int = 0
         box.grid()
