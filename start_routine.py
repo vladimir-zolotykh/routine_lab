@@ -128,11 +128,11 @@ class RoutineEditor(tk.Toplevel):
                 print(ex_name)
             ShowText(self, message=s.getvalue())
 
-    def show_workouts(self):
+    def show_workouts(self) -> None:
         workouts: list[MD.Workout] = self.session.query(MD.Workout).all()
         ShowList(parent=self, items=[wo.name for wo in workouts])
 
-    def add_exercise(self, ex_box: tk.Frame) -> None:
+    def add_exercise(self, ex_box: tk.Frame, init: MD.Exercise | None = None) -> None:
         if not self.wo_exercises:
             self.ex_frame.rowconfigure(1, weight=1)
             self.ex_frame.grid(row=1, column=0, sticky=tk.EW)
@@ -141,13 +141,18 @@ class RoutineEditor(tk.Toplevel):
         ex_frame.grid(column=0, sticky=tk.EW)  # NOTE! row= not set increments row
         ex_names = [en.name for en in self.session.query(MD.ExerciseName).all()]
         ex_name_var = self._make_var(value=ex_names[0])
+        if init:
+            ex_name_var.set(init.exercise_name.name)
         cb = ttk.Combobox(ex_frame, textvariable=ex_name_var, values=ex_names)
         cb.grid(row=0, column=0, sticky=tk.W)
-
         weight_var = tk.DoubleVar(value=100.0)
+        if init:
+            weight_var.set(init.weight)
         weight = tk.Entry(ex_frame, textvariable=weight_var, width=5)
         weight.grid(row=0, column=1, sticky=tk.W)
         reps_var = tk.IntVar(value=5)
+        if init:
+            reps_var.set(init.reps)
         reps = tk.Entry(ex_frame, textvariable=reps_var, width=3)
         self.wo_exercises[ex_frame] = (ex_name_var, weight_var, reps_var)
         reps.grid(row=0, column=2, sticky=tk.W)
