@@ -161,24 +161,15 @@ class RoutineEditor(tk.Toplevel):
         ex_frame: tk.Frame = tk.Frame(ex_box)
         ex_frame.grid(column=0, sticky=tk.EW)  # NOTE! row= not set increments row
         ex_names = [en.name for en in self.session.query(MD.ExerciseName).all()]
-        # ex_name_var = self._make_var(value=ex_names[0])
         ex_name_var = self._make_var(
             value=init.exercise_name.name if init else ex_names[0]
         )
-        # if init:
-        #     ex_name_var.set(init.exercise_name.name)
         cb = ttk.Combobox(ex_frame, textvariable=ex_name_var, values=ex_names)
         cb.grid(row=0, column=0, sticky=tk.W)
-        # weight_var = tk.DoubleVar(value=100.0)
         weight_var = tk.DoubleVar(value=init.weight if init else 100.0)
-        # if init:
-        #     weight_var.set(init.weight)
         weight = tk.Entry(ex_frame, textvariable=weight_var, width=5)
         weight.grid(row=0, column=1, sticky=tk.W)
-        # reps_var = tk.IntVar(value=5)
         reps_var = tk.IntVar(value=init.reps if init else 5)
-        # if init:
-        #     reps_var.set(init.reps)
         reps = tk.Entry(ex_frame, textvariable=reps_var, width=3)
         self.wo_exercises[ex_frame] = (ex_name_var, weight_var, reps_var)
         reps.grid(row=0, column=2, sticky=tk.W)
