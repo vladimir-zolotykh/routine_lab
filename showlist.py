@@ -24,15 +24,17 @@ class ShowWorkout(tkinter.simpledialog.Dialog):
             ("id", "name", "started"), (tk.IntVar, tk.StringVar, tk.StringVar)
         ):
             hdr = tk.Frame(box)
-            hdr.grid(row=row, column=0, sticky=tk.EW)
-            tk.Label(hdr, text=f"{text}: ").grid(row=0, column=0, sticky=tk.W)
+            hdr.grid(column=0, sticky=tk.EW)
+            tk.Label(hdr, text=f"{text}: ", width=len("started: "), anchor=tk.W).grid(
+                row=0, column=0
+            )
             var = var_type(value=getattr(self.workout, text))
             tk.Entry(hdr, textvariable=var).grid(row=0, column=1)
-            row += 1
+            # row += 1
 
         row += 1
         ttk.Separator(box, orient=tk.HORIZONTAL).grid(
-            row=row, columnspan=4, sticky=tk.EW, pady=5
+            columnspan=4, sticky=tk.EW, pady=5
         )
         row += 1
         add_exercise = self.routine_editor.add_exercise
