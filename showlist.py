@@ -23,10 +23,12 @@ class ShowWorkout(tkinter.simpledialog.Dialog):
         for text, var_type in zip(
             ("id", "name", "started"), (tk.IntVar, tk.StringVar, tk.StringVar)
         ):
-            row += 1
-            tk.Label(box, text=f"{text}: ").grid(row=row, column=0, sticky=tk.W)
+            hdr = tk.Frame(box)
+            hdr.grid(row=row, column=0, sticky=tk.EW)
+            tk.Label(hdr, text=f"{text}: ").grid(row=0, column=0, sticky=tk.W)
             var = var_type(value=getattr(self.workout, text))
-            tk.Entry(box, textvariable=var).grid(row=row, column=1)
+            tk.Entry(hdr, textvariable=var).grid(row=0, column=1)
+            row += 1
 
         row += 1
         ttk.Separator(box, orient=tk.HORIZONTAL).grid(
