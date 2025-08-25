@@ -18,7 +18,6 @@ class ShowWorkout(tkinter.simpledialog.Dialog):
 
     def body(self, master) -> tk.Widget:
         box = tk.Frame(master)
-        row: int = 0
         box.grid()
         for text, var_type in zip(
             ("id", "name", "started"), (tk.IntVar, tk.StringVar, tk.StringVar)
@@ -30,15 +29,11 @@ class ShowWorkout(tkinter.simpledialog.Dialog):
             )
             var = var_type(value=getattr(self.workout, text))
             tk.Entry(hdr, textvariable=var).grid(row=0, column=1)
-            # row += 1
-
-        row += 1
         ttk.Separator(box, orient=tk.HORIZONTAL).grid(
             columnspan=4, sticky=tk.EW, pady=5
         )
-        row += 1
         add_exercise = self.routine_editor.add_exercise
-        for row, ex in enumerate(self.workout.exercises, row):
+        for _, ex in enumerate(self.workout.exercises):
             add_exercise(box, init=ex)
         return box
 
