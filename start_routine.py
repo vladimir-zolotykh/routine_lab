@@ -33,6 +33,24 @@ def _make_var(self, value: str, prefix: str = "str_var_") -> tk.StringVar:
     return var
 
 
+def _make_str_var(
+    self, value: str | None = None, prefix: str | None = "str_var_"
+) -> tk.StringVar:
+    """Make ``global'' StringVar variable
+
+    Make StringVar class attribute, return it"""
+
+    if not hasattr(self, "_str_num"):
+        setattr(self, "_str_num", 1)
+    var_name = prefix if isinstance(prefix, str) else "" + str(self._str_num)
+    self._str_num += 1
+    var = tk.StringVar()
+    if value:
+        var.set(value)
+    setattr(self, var_name, var)
+    return var
+
+
 class RoutineEditor(tk.Toplevel):
     wo_exercises: dict[tk.Frame, tuple[tk.StringVar, tk.DoubleVar, tk.IntVar]] = {}
 
