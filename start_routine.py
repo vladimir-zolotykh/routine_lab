@@ -164,19 +164,23 @@ class RoutineEditor(tk.Toplevel):
         ex_name_var = self._make_var(
             value=init.exercise_name.name if init else ex_names[0]
         )
-        cb = ttk.Combobox(ex_frame, textvariable=ex_name_var, values=ex_names)
-        cb.grid(row=0, column=0, sticky=tk.W)
+        cb_ex = ttk.Combobox(ex_frame, textvariable=ex_name_var, values=ex_names)
+        cb_ex.grid(row=0, column=0, sticky=tk.W)
+        wo_names = [wo.name for wo in self.session.query(MD.Workout).all()]
+        wo_name_var = self._make_var(value=wo_names[0])
+        cb_wo = ttk.Combobox(ex_frame, textvariable=wo_name_var, values=wo_names)
+        cb_wo.grid(row=0, column=1, sticky=tk.W)
         weight_var = tk.DoubleVar(value=init.weight if init else 100.0)
         weight = tk.Entry(ex_frame, textvariable=weight_var, width=5)
-        weight.grid(row=0, column=1, sticky=tk.W)
+        weight.grid(row=0, column=2, sticky=tk.W)
         reps_var = tk.IntVar(value=init.reps if init else 5)
         reps = tk.Entry(ex_frame, textvariable=reps_var, width=3)
         self.wo_exercises[ex_frame] = (ex_name_var, weight_var, reps_var)
-        reps.grid(row=0, column=2, sticky=tk.W)
+        reps.grid(row=0, column=3, sticky=tk.W)
         del_btn = tk.Button(
             ex_frame, text="Delete", command=lambda: self.remove_exercise(ex_frame)
         )
-        del_btn.grid(row=0, column=3, sticky=tk.W)
+        del_btn.grid(row=0, column=4, sticky=tk.W)
         self.update_idletasks()
 
 
