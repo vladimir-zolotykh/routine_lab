@@ -23,17 +23,7 @@ from showlist import ShowList
 from askeditstring import askeditstring
 
 
-# def _make_var(self, value: str, prefix: str = "str_var_") -> tk.StringVar:
-#     if not hasattr(self, "str_num"):
-#         setattr(self, "str_num", 1)
-#     var_name = prefix + str(self.str_num)
-#     self.str_num += 1
-#     var = tk.StringVar(value=value)
-#     setattr(self, var_name, var)
-#     return var
-
-
-def _make_str_var(
+def _make_var(
     self, value: str | None = None, prefix: str | None = "str_var_"
 ) -> tk.StringVar:
     """Make ``global'' StringVar variable
@@ -50,9 +40,6 @@ def _make_str_var(
         var.set(value)
     setattr(self, var_name, var)
     return var
-
-
-_make_var = _make_str_var
 
 
 class RoutineEditor(tk.Toplevel):
