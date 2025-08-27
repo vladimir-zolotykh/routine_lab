@@ -42,7 +42,8 @@ def _make_str_var(
 
     if not hasattr(self, "_str_num"):
         setattr(self, "_str_num", 1)
-    var_name = prefix if isinstance(prefix, str) else "" + str(self._str_num)
+    var_name = prefix if isinstance(prefix, str) else ""
+    var_name += str(self._str_num)
     self._str_num += 1
     var = tk.StringVar()
     if value:
