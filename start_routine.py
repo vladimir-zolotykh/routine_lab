@@ -156,8 +156,8 @@ class RoutineEditor(tk.Toplevel):
         cb_ex.grid(row=0, column=0, sticky=tk.W)
         wo_names = [wo.name for wo in self.session.query(MD.Workout).all()]
         wo_name_var = self._make_var(value=wo_names[0])
-        cb_wo = ttk.Combobox(ex_frame, textvariable=wo_name_var, values=wo_names)
-        cb_wo.grid(row=0, column=1, sticky=tk.W)
+        self.cb_wo = ttk.Combobox(ex_frame, textvariable=wo_name_var, values=wo_names)
+        self.cb_wo.grid(row=0, column=1, sticky=tk.W)
         weight_var = tk.DoubleVar(value=init.weight if init else 100.0)
         weight = tk.Entry(ex_frame, textvariable=weight_var, width=5)
         weight.grid(row=0, column=2, sticky=tk.W)
