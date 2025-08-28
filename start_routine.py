@@ -195,8 +195,8 @@ class RoutineEditor(tk.Toplevel):
             if ex.exercise_name.name == ex_name:
                 weight = ex.weight
                 reps = ex.reps
-                print(f"{weight = }, {reps = }")
-        # print(f"{selected_value = }")
+                ex_frame_item.weight_var.set(weight)
+                ex_frame_item.reps_var.set(reps)
 
 
 parser = argparse.ArgumentParser(
